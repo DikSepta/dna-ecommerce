@@ -1,5 +1,5 @@
 import CartActionTypes from "./cart.action.types";
-import { addItemToCartWithGrouping } from "./cart.utils";
+import { addItemToCartWithGrouping, reduceCartItemQuantityUtils } from "./cart.utils";
 
 const INITIAL_STATE = {
     hidden: true,
@@ -17,6 +17,18 @@ const CartReducer = (prevState = INITIAL_STATE, action) => {
             return{
                 ...prevState,
                 cartItems: addItemToCartWithGrouping(prevState.cartItems, action.payload)
+            }
+        case CartActionTypes.CLEAR_ITEM_FROM_CART:
+            return{
+                ...prevState,
+                cartItems: prevState.cartItems.filter(
+                    cartItem => (cartItem.id !== action.payload.id)
+                )
+            }
+        case CartActionTypes.REDUCE_CART_ITEM_QUANTITY:
+            return{
+                ...prevState,
+                cartItems: reduceCartItemQuantityUtils(prevState.cartItems, action.payload)
             }
         default:
             return prevState;
