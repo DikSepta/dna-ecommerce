@@ -23,6 +23,21 @@ provider.setCustomParameters({prompt:'select_account'});
 
 export const signInWithGoogle = () => auth.signInWithPopup(provider);
 
+export const AddShopDataToFirebase = async (shopData) => {
+  const collectionKey = "collection"
+
+  const collectionRef = firestore.collection(collectionKey);
+
+  const batch = firestore.batch();
+
+  shopData.forEach(item => {
+    const newDocRef = collectionRef.doc();
+    batch.set(newDocRef, item)
+  });
+
+  return await batch.commit();
+}
+
 export const createUserProfileDocument = async (userAuth, additionalData) => {
   if(!userAuth)
     return;
@@ -52,6 +67,28 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   }
 
   return userRef;
+}
+
+export const transformShopCollectionData = (collectionSnapshot) => {
+  const transformedCollection = collectionSnapshot.docs.map(doc => {
+      const {title, items} = doc.data();
+
+      return {
+        routeName: encodeURI(title.toLowerCase()),
+        id: doc.id,
+        title,
+        items
+      }
+    }
+  )
+  
+  return transformedCollection.reduce(
+    (accumulator, collection) => {
+      accumulator[collection.title.toLowerCase()] = collection
+
+      return accumulator
+    }, {}
+  )
 }
 
 export default firebase;

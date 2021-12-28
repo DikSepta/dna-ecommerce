@@ -20,5 +20,5 @@ export const selectAllCollection = createSelector(
  */
 export const selectCollection = collectionUrlParam => createSelector(
     [selectShop],
-    shop => shop.collection[collectionUrlParam]
+    shop => shop.collection ? shop.collection[collectionUrlParam] : null
 )
