@@ -1,22 +1,31 @@
-import SHOP_DATA from "../../pages/shop/shop.data"
 import shopActionTypes from "./shop.action.types";
 
 const INITIAL_STATE = {
-    collection: SHOP_DATA,
+    collection: null,
+    isFetching: true,
+    errorMessage: undefined
 };
 
 const shopReducer = (prevState = INITIAL_STATE, action) => {
-    console.log('shopreducer called')
-    console.log(action)
 
     switch (action.type) {
-        case shopActionTypes.setCollection:
-            console.log('setCollection')
-            console.log(action)
+        case shopActionTypes.FETCH_COLLECTION_START:
             return {
                 ...prevState,
-                collection: action.payload
+                isFetching: true,
             }
+        case shopActionTypes.FETCH_COLLECTION_SUCCES:
+            return {
+                ...prevState,
+                collection: action.payload,
+                isFetching: false,
+            }
+        case shopActionTypes.FETCH_COLLECTION_FAILURE:
+            return {
+                ...prevState,
+                isFetching: false,
+                errorMessage: action.payload,
+            }    
         default:
             return prevState
     }
